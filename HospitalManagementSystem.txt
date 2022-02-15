@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HospitalManagementSystem
+{
+    public class HospitalManagementRepository
+    {
+        HospitalManagementContext hospitalManagementContext;
+        
+
+	//Fill your code here to implement RegisterDoctor Method
+        public int RegisterDoctor(IList<Doctor> doctorList) 
+        {
+            int res = 0;
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                foreach(var doctor in doctorList) {
+                    hospitalManagementContext.Doctors.Add(doctor);
+                }
+                res = hospitalManagementContext.SaveChanges();
+            }
+            return res;
+        }
+
+       
+        //Fill your code here to implement RegisterPatient Method
+        public int RegisterPatient(IList<Patient> patientList) 
+        {
+            int res = 0;
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                foreach(var patient in patientList) {
+                    hospitalManagementContext.Patients.Add(patient);
+                }
+                res = hospitalManagementContext.SaveChanges();
+            }
+            return res;
+        }
+
+	
+	//Fill your code here to implement RegisterPatientDoctorVisit Method
+        
+        public int RegisterPatientDoctorVisit(DoctorPatient doctorPatient)
+        {
+            int res = 0;
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                hospitalManagementContext.DoctorsPatients.Add(doctorPatient);
+                res = hospitalManagementContext.SaveChanges();
+            }
+            return res;
+        }
+	
+	//Fill your code here to implement DisplayPatients Method
+        public IList<Patient> DisplayPatients()
+        {
+            IList<Patient> res = new List<Patient>();
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                res = hospitalManagementContext.Patients.ToList<Patient>();
+            }
+            return res;
+            
+        }
+
+	
+	//Fill your code here to implement DisplayDoctors Method
+        public IList<Doctor> DisplayDoctors()
+        {
+            IList<Doctor> res = new List<Doctor>();
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                res = hospitalManagementContext.Doctors.ToList<Doctor>();
+            }
+            return res;
+        }
+
+	    public IList<DoctorPatient> DisplayPatientDoctorVisit()
+	    {
+	        IList<DoctorPatient> res = new List<DoctorPatient>();
+            using(hospitalManagementContext = new HospitalManagementContext()) {
+                res = hospitalManagementContext.DoctorsPatients.ToList<DoctorPatient>();
+            }
+            return res;
+	        
+	    }
+	//Fill your code here to implement DisplayPatientDoctorVisit Method
+        
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.Entity;
+
+namespace HospitalManagementSystem
+{
+    public class HospitalManagementContext:DbContext
+    {
+	//Do NOT change the context name HospitalManagementContext or DataConnection name
+        public HospitalManagementContext():base("Name=DataConnection")
+        {
+
+        }
+        public virtual DbSet<Patient> Patients {get; set;}
+        public virtual DbSet<Doctor> Doctors {get; set;}
+        public virtual DbSet<DoctorPatient> DoctorsPatients {get; set;}
+
+	//Implement property for 'Patients' with required 'DbSet' declaration 
+	//Implement property for 'Doctors' with required 'DbSet' declaration 
+	//Implement property for 'DoctorsPatients' with required 'DbSet' declaration 
+	    
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HospitalManagementSystem
+{
+    //Fill your code here
+    [Table("tblPatient")]
+    public class Patient {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int PatientId {get;set;}
+        public string PatientName {get; set;}
+        public long PatientMobileNumber {get; set;}
+        public virtual ICollection<DoctorPatient> DoctorPatient {get;set;}
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HospitalManagementSystem
+{
+    //Fill your code here
+    [Table("tblDoctor")]
+
+    public class Doctor {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int DoctorId {get; set;}
+        public string DoctorName {get; set;}
+        public string Specialization {get; set;}
+        public virtual ICollection<DoctorPatient> DoctorPatient {get; set;}
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HospitalManagementSystem
+{
+    //Fill your code here
+    [Table("tblDoctorPatient")]
+    public class DoctorPatient {
+        [Key,Column(Order = 1), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int PatientId {get; set;}
+        [Key,Column(Order = 2), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int DoctorId {get; set;}
+        public virtual Patient PatientInformation {get;set;}
+        public virtual Doctor DoctorInformation {get;set;}
+    }
+}
+

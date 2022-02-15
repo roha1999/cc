@@ -1,0 +1,413 @@
+Program.cs
+
+using System;
+using System.Text.RegularExpressions;
+
+namespace ADO_Net_App1
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Welcome Admin to Office Commute System");
+            DisplayMenu();
+            Console.WriteLine("\nThank you for using the app. Have a nice day");
+        }
+
+        public static void DisplayMenu()
+        {
+            EmployeeCommuteDataInfo commuteData = new EmployeeCommuteDataInfo();
+            EmployeeCommuteDataOperations commuteOperations = new EmployeeCommuteDataOperations();
+
+            string answer = string.Empty;
+
+            do
+            {
+
+                Console.WriteLine("\nMenu\n\n1. Add Commute Record\n2. Display All Commute Records\n3. Display Employees who Pay Highest Commute Fare\n\n");
+                Console.Write("Enter Your Option : ");
+
+                int option = int.Parse(Console.ReadLine());
+                bool isValidEmployeeId;
+                bool isValidTravelDistance;
+                bool isValidEmployeeType;
+
+
+                string employeeId = string.Empty;
+                string employeeName = string.Empty;
+                string employeeType = string.Empty;
+                float travelDistance;
+
+                switch (option)
+                {	 	  	    	 	      	  	 	
+                    case 1:
+                        do
+                        {
+                            Console.Write("Employee Id : ");
+                            employeeId = Console.ReadLine();
+
+                            if (new Program().ValidateEmployeeId(employeeId))
+                            {
+                                isValidEmployeeId = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Employee Id");
+                                isValidEmployeeId = false;
+                            }
+
+                        } while (!isValidEmployeeId);
+                        Console.Write("Employee Name : ");
+                        employeeName = Console.ReadLine();
+
+                        do
+                        {
+                            Console.Write("Employee Type (External/Internal) : ");
+                            employeeType = Console.ReadLine();
+
+                            if (employeeType.Substring(0,3).ToUpper().Equals(employeeId.Substring(0,3)))
+                            {
+                                isValidEmployeeType = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Employee Type");
+                                isValidEmployeeType = false;
+                            }
+
+                        } while (!isValidEmployeeType); 
+
+                        do
+                        {	 	  	    	 	      	  	 	
+                            Console.Write("Travel Distance : ");
+                            travelDistance = float.Parse(Console.ReadLine());
+
+                            if (isValidTravelDistance = new Program().ValidateTravelDistance(travelDistance))
+                                isValidTravelDistance = true;
+                            else
+                            {
+                                Console.WriteLine("Invalid Travel Distance");
+                                isValidTravelDistance = false;
+                            }
+
+                        } while (!isValidTravelDistance);
+
+                        double commuteCharge = new Program().CalculateFare(employeeType, travelDistance);
+
+                        commuteData = new EmployeeCommuteDataInfo
+                        {
+
+                            EmployeeId = employeeId,
+                            EmployeeName = employeeName,
+                            EmployeeType = employeeType,
+                            TravelDistance = travelDistance,
+                            CommuteCharge = commuteCharge
+                        };
+
+                        var response=commuteOperations.AddCommuteRecord(commuteData);
+
+                        if (response)
+                        {
+                            Console.WriteLine("Commute Data Added Successfully!!!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error while Adding Commute Data...");
+                        }
+
+                        break;
+                    case 2:
+                        Console.WriteLine("\nEmployees Commute Details\n");
+
+                        var commuteRecords = commuteOperations.DisplayCommuteRecords();
+
+                        if (commuteRecords.Count>0)
+                        {	 	  	    	 	      	  	 	
+                            Console.WriteLine("{0,-15}{1,-20}{2,-20}{3,-20}{4,-20}","Employee Id","Employee Name","Employee Type","Distance","Commute Fare");
+                            foreach (var item in commuteRecords)
+                            {
+                                Console.WriteLine("{0,-15}{1,-20}{2,-20}{3,-20}{4,-20}",item.EmployeeId,item.EmployeeName,item.EmployeeType,item.TravelDistance,item.CommuteCharge.ToString("0.00"));
+                            }
+                        } 
+
+                        break;
+                    case 3:
+                        Console.WriteLine("\nEmployees with Highest Commute Fare\n");
+                        var commuteRecordsWithHighestFare = commuteOperations.DisplayCommuteRecordsByHigestCommuteFare();
+
+                        if (commuteRecordsWithHighestFare.Count > 0)
+                        {
+                            Console.WriteLine("{0,-15}{1,-20}{2,-20}{3,-20}{4,-20}", "Employee Id", "Employee Name", "Employee Type", "Distance", "Commute Fare");
+                            foreach (var item in commuteRecordsWithHighestFare)
+                            {
+                                Console.WriteLine("{0,-15}{1,-20}{2,-20}{3,-20}{4,-20}", item.EmployeeId, item.EmployeeName, item.EmployeeType, item.TravelDistance, item.CommuteCharge.ToString("0.00"));
+                            }
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Option");
+                        break;
+                }
+                Console.Write("\nDo you want to continue (Yes/No) ? : ");
+                answer = Console.ReadLine();
+
+            } while (answer.ToLower().Equals("yes"));
+
+        }
+
+        public bool ValidateEmployeeId(string employeeId)
+        {
+            return Regex.IsMatch(employeeId, @"^[INT|EXT]{3}[0-9]{4}$");
+        }	 	  	    	 	      	  	 	
+        public bool ValidateTravelDistance(float travelDistance)
+        {
+            return travelDistance >= 2 && travelDistance <= 30;
+        }
+        public double CalculateFare(string employeeType, float travelDistance)
+        {
+            double commuteFare = 0.0;
+
+            if (employeeType.Equals("Internal", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (travelDistance <= 10)
+                {
+                    commuteFare = travelDistance * 50;
+                }
+                else if (travelDistance > 10 && travelDistance <= 20)
+                {
+                    commuteFare = travelDistance * 60;
+                }
+                else
+                {
+                    commuteFare = travelDistance * 70;
+                }
+
+            }
+            if (employeeType.Equals("External", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (travelDistance <= 10)
+                {
+                    commuteFare = travelDistance * 70;
+                }
+                else if (travelDistance > 10 && travelDistance <= 20)
+                {
+                    commuteFare = travelDistance * 80;
+                }
+                else
+                {	 	  	    	 	      	  	 	
+                    commuteFare = travelDistance * 90;
+                }
+            }
+
+            return commuteFare;
+        }
+    }
+}
+
+##################################################
+EMPLOYEE COMMUTE DATAINFO.cs
+
+
+namespace ADO_Net_App1
+{
+    public class EmployeeCommuteDataInfo
+    {
+        public string EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
+        public string EmployeeType { get; set; }
+        public float TravelDistance { get; set; }
+        public double CommuteCharge { get; set; }
+
+        public EmployeeCommuteDataInfo()
+        {
+
+        }
+        public EmployeeCommuteDataInfo(string employeeId, string employeeName, string employeeType, float travelDistance, float commuteCharge)
+        {
+            EmployeeId = employeeId;
+            EmployeeName = employeeName;
+            EmployeeType = employeeType;
+            TravelDistance = travelDistance;
+            CommuteCharge = commuteCharge;
+        }
+    }
+}
+
+#####################################################
+EMPLOYEE COMMUTE DATAOPERATIONS.cs
+
+using System;
+using System.Collections.Generic;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
+using System.Configuration;
+
+namespace ADO_Net_App1
+{
+    public class EmployeeCommuteDataOperations
+    {
+        public static readonly string insertRecords =
+            "INSERT INTO tblEmployeeCommuteDetails(EmployeeId,EmployeeName,EmployeeType,TravelDistance,CommuteCharge) " +
+            "VALUES(:employeeId,:employeeName,:employeeType,:travelDistance,:commuteCharge)";
+
+        public static readonly string displayAllRecords = "SELECT * FROM tblEmployeeCommuteDetails";
+
+        public static readonly string displayEmployeesWithMaxCommuteFare =
+            "SELECT * FROM tblEmployeeCommuteDetails WHERE CommuteCharge=(SELECT MAX(CommuteCharge) FROM tblEmployeeCommuteDetails)";
+
+        public OracleConnection _sqlConn = null;
+        public string ConnectionString
+        {
+            get
+            {
+                return DBConnection.connStr;
+            }
+        }
+
+        public EmployeeCommuteDataOperations()
+        {
+
+        }
+
+        public bool AddCommuteRecord(EmployeeCommuteDataInfo commuteData)
+        {
+        
+            try
+            {	 	  	  		   	     	      	  	 	
+                using (_sqlConn = new OracleConnection(ConnectionString))
+                {
+                    using (OracleCommand cmdAddCommuteRecord = new OracleCommand(insertRecords, _sqlConn))
+                    {
+                        cmdAddCommuteRecord.Parameters.Add(new OracleParameter("employeeId", commuteData.EmployeeId));
+                        cmdAddCommuteRecord.Parameters.Add(new OracleParameter("employeeName", commuteData.EmployeeName));
+                        cmdAddCommuteRecord.Parameters.Add(new OracleParameter("employeeType", commuteData.EmployeeType));
+                        cmdAddCommuteRecord.Parameters.Add(new OracleParameter("travelDistance", commuteData.TravelDistance));
+                        cmdAddCommuteRecord.Parameters.Add(new OracleParameter("commuteCharge", commuteData.CommuteCharge));
+
+                        _sqlConn.Open();
+                        int rowsAdded = cmdAddCommuteRecord.ExecuteNonQuery();
+                        if (rowsAdded > 0)
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+            }
+            catch(Exception ex)
+            { 
+                return false;
+            }
+        }
+
+        public IList<EmployeeCommuteDataInfo> DisplayCommuteRecords()
+        {	 
+           
+            List<EmployeeCommuteDataInfo> commuteDataList = new List<EmployeeCommuteDataInfo>();
+
+            try
+            {
+                using (_sqlConn = new OracleConnection(ConnectionString))
+                {	 
+                    Console.WriteLine("-s---2-----");
+                    using (OracleCommand cmdDisplayAllCommuteRecords = new OracleCommand(displayAllRecords, _sqlConn))
+                    {	 	  	  		   	     	      	  	 	
+
+                        _sqlConn.Open();
+
+                        using (OracleDataReader sqlData = cmdDisplayAllCommuteRecords.ExecuteReader())
+                        {
+                            if (sqlData.HasRows)
+                            {
+                           
+                                while (sqlData.Read())
+                                {
+                                    EmployeeCommuteDataInfo commuteData = new EmployeeCommuteDataInfo
+                                    {
+                                        EmployeeId = sqlData["EmployeeId"].ToString(),
+                                        EmployeeName = sqlData["EmployeeName"].ToString(),
+                                        EmployeeType = sqlData["EmployeeType"].ToString(),
+                                        TravelDistance = float.Parse(sqlData["TravelDistance"].ToString()),
+                                        CommuteCharge = double.Parse(sqlData["CommuteCharge"].ToString())
+                                    };
+
+                                    commuteDataList.Add(commuteData);
+                                }
+                            }
+                        }
+                    }
+                }
+                                    
+return commuteDataList; 
+            }
+            catch (Exception ex)
+            {
+               
+                return null;
+            }
+
+            return commuteDataList; 
+        }	 	  	  		   	     	      	  	 	
+
+        public IList<EmployeeCommuteDataInfo> DisplayCommuteRecordsByHigestCommuteFare()
+        {	  	    	 	      	  	 	
+            List<EmployeeCommuteDataInfo> commuteDataList = new List<EmployeeCommuteDataInfo>();
+
+            try
+            {
+                using (_sqlConn = new OracleConnection(ConnectionString))
+                {
+                    using (OracleCommand cmdDisplayCommuteRecordsByHigestFare =
+                        new OracleCommand(displayEmployeesWithMaxCommuteFare, _sqlConn))
+                    {
+                        _sqlConn.Open();
+
+                        using (OracleDataReader sqlData = cmdDisplayCommuteRecordsByHigestFare.ExecuteReader())
+                        {
+                            if (sqlData.HasRows)
+                            {
+                                while (sqlData.Read())
+                                {
+                                    EmployeeCommuteDataInfo commuteData = new EmployeeCommuteDataInfo
+                                    {
+                                        EmployeeId = sqlData["EmployeeId"].ToString(),
+                                        EmployeeName = sqlData["EmployeeName"].ToString(),
+                                        EmployeeType = sqlData["EmployeeType"].ToString(),
+                                        TravelDistance = float.Parse(sqlData["TravelDistance"].ToString()),
+                                        CommuteCharge = double.Parse(sqlData["CommuteCharge"].ToString())
+                                    };
+
+                                    commuteDataList.Add(commuteData);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }	 	  	  		   	     	      	  	 	
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return commuteDataList; ;
+        }
+    }
+}
+
+###################################################
+dbconnection.cs
+
+//This is for your reference. DO NOT make any changes here
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ADO_Net_App1
+{
+    public class DBConnection
+    {
+        public static String connStr = "User Id=admin;Password=admin;Data Source=localhost:1521/XE;";
+    }
+}

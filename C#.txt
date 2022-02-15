@@ -1,0 +1,1556 @@
+---------------------------
+****MOVIE BOOKING
+---------------------------
+TICKET.CS
+==========
+using System;
+
+namespace MovieBookingApp
+{
+    /// <summary>
+    /// Model class for Ticket object
+    /// </summary>
+    public class Ticket
+    {
+        public Movie Movie { get; set; }
+        public DateTime BookingDate { get; set; }
+        public int TicketCount { get; set; }
+        public double TotalAmount { get; set; }
+    }
+}
+
+PROGRAM.CS
+============
+using System;
+
+namespace MovieBookingApp
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            //The logic to choose the movie should be done here
+            //Steps in the process involve Creation of movie detail followed by Ticket buy
+            Program objMainProgram = new Program();
+            Movie selectedMovie = new Movie();
+            string movieTitle = string.Empty;
+            string movieCast = string.Empty;
+            double ticketPrice = 0;
+
+            Console.Write("**********************************");
+            Console.WriteLine();
+            Console.Write("Moving Ticket Booking Application");
+            Console.WriteLine();
+            Console.Write("**********************************");
+            Console.WriteLine();
+            try
+            {
+                #region Create movie detail
+                Console.WriteLine("Dear viewer, please enter the movie name you want to watch");
+                Console.WriteLine();
+                Console.WriteLine("1. Darbar");
+                Console.WriteLine("2. Bigil");
+                Console.WriteLine("3. Pattas");
+                Console.WriteLine();
+
+                movieTitle = Console.ReadLine();
+                Console.WriteLine("Please provide movie cast names (Cast names separated by comma)");
+                movieCast = Console.ReadLine();
+                Console.WriteLine("Please provide ticket price in valid format");
+                ticketPrice = double.Parse(Console.ReadLine());
+                selectedMovie = objMainProgram.CreateMovie(movieTitle.Trim(), movieCast.Trim(), ticketPrice);
+
+                Console.WriteLine();
+                Console.WriteLine("Dear viewer, you have chosen to watch: " + selectedMovie.Title);
+                Console.WriteLine();
+                Console.WriteLine("Movie name: " + selectedMovie.Title);
+                Console.WriteLine("Cast: " + selectedMovie.Cast);
+                Console.WriteLine("Ticket price: " + selectedMovie.TicketPrice.ToString());
+                #endregion
+
+                #region Buy ticket
+                Console.WriteLine("Do you want to buy ticket for this movie? y/n");
+                string response = Console.ReadLine();
+                if (response.ToLower().Equals("y"))
+                {	 	  	    	 	      	  	 	
+                    DateTime bookingDate;
+                    int ticketCount = 0;
+                    Console.WriteLine("Please enter the date for which you want to buy the tickets in mm/dd/yyyy format.");
+                    bookingDate = DateTime.Parse(Console.ReadLine());
+
+                    Console.WriteLine("How many tickets do you want?");
+                    ticketCount = int.Parse(Console.ReadLine());
+                    Ticket ticket = objMainProgram.BuyTickets(bookingDate, ticketCount, selectedMovie);
+
+                    if (ticket != null)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Dear viewer, your movie details are as follows:");
+                        Console.WriteLine();
+                        Console.WriteLine("Movie: " + ticket.Movie.Title);
+                        Console.WriteLine("Bookingdate: " + ticket.BookingDate.ToShortDateString());
+                        Console.WriteLine("No of tickets: " + ticket.TicketCount);
+                        Console.WriteLine("Total amount: " + ticket.TotalAmount.ToString());
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("***Thank you. Enjoy your movie. Have a great day***");
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("***Thank you. Hope to see you again***");
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occured in the process. Please find the detail: " + ex.Message + " Exception stack trace: "+ ex.StackTrace);
+            }
+            finally
+            {
+                Console.ReadKey();
+            }	 	  	    	 	      	  	 	
+        }
+
+        /// <summary>
+        /// Method to create movie detail
+        /// </summary>
+        /// <param name="title">Movie title</param>
+        /// <param name="cast">Cast of actors in the movie</param>
+        /// <param name="price">Ticket price</param>
+        /// <returns>Movie object. If conditions aren't met, exception would be thrown.</returns>
+        public Movie CreateMovie(string title, string cast, double price)
+        {
+            if (string.IsNullOrEmpty(title))
+                throw new Exception("Movie title cannot be empty. Please provide valid value");
+            else if (string.IsNullOrEmpty(cast))
+                throw new Exception("Movie cast cannot be empty. Please provide valid value");
+            else if(price <= 0)
+                throw new Exception("Incorrect value for Movie price. Please provide valid value");
+
+            Movie movie = new Movie()
+            {
+                Title = title,
+                Cast = cast,
+                TicketPrice = price
+            };
+
+            return movie;
+        }
+
+        /// <summary>
+        /// Method to buy ticket for a movie
+        /// </summary>
+        /// <param name="bookingDate">Date for which the movie ticket needs to be bought</param>
+        /// <param name="ticketCount">The count of tickets to be bought</param>
+        /// <param name="selectedMovie">The movie for which the ticket should be bought</param>
+        /// <returns>Ticket object if the condition match, else null.</returns>
+        public Ticket BuyTickets(DateTime bookingDate, int ticketCount, Movie selectedMovie)
+        {	 	  	    	 	      	  	 	
+            if (selectedMovie != null)
+            {
+                if (ticketCount <= 0)
+                    throw new Exception("Incorrect value provided for the number of tickets. Please recheck");
+                if (bookingDate < DateTime.Now)
+                    throw new Exception("Incorrect date provided. Please recheck");
+
+                Ticket ticket = new Ticket();
+                ticket.Movie = selectedMovie;
+                ticket.BookingDate = bookingDate;
+                ticket.TicketCount = ticketCount;
+                ticket.TotalAmount = ticket.TicketCount * ticket.Movie.TicketPrice;
+
+                return ticket;
+            }
+            else
+                return null;
+        }        
+    }
+}
+
+MOVIE.CS
+===============
+namespace MovieBookingApp
+{
+    /// <summary>
+    /// Model class for Movie object
+    /// </summary>
+    public class Movie
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Cast { get; set; }
+        public double TicketPrice { get; set; }
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+****ProfitSharingApp.
+-------------------------------
+
+PROGRAM.CS
+================
+using System;
+
+namespace ProfitShareApp
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+		    ProfitShareCalculator shareCalculator = new ProfitShareCalculator();
+
+		//Write your code here
+		
+	   	    Console.WriteLine("Welcome Admin to the Profit Sharing Calculator Application!!!");
+	   	    
+	   	    // -------------------------------------------------------------------------
+	   	    Console.WriteLine("No of Partners : ");
+	   	    shareCalculator.Partners = int.Parse(Console.ReadLine());
+	   	    
+	   	    if(shareCalculator.ValidatePartnersCount(shareCalculator.Partners)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Invalid Partners Count...Restart Your Application");
+	   	    }
+	   	    
+	   	    // -------------------------------------------------------------------------
+	   	    Console.WriteLine("Profit Amount : ");
+	   	    shareCalculator.Amount = long.Parse(Console.ReadLine());
+	   	    
+	   	    if(shareCalculator.ValidateProfit(shareCalculator.Amount)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Invalid Profit Amount...Restart Your Application");
+	   	    }
+	   	    
+	   	    
+	   	    // -------------------------------------------------------------------------
+	   	    Console.WriteLine("Total Share Valuation Percentage of the Company in the Stock Market : ");
+	   	    shareCalculator.Svalue = int.Parse(Console.ReadLine());
+	   	    
+	   	    if(shareCalculator.ValidateCompanyShareValuation (shareCalculator.Svalue)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Invalid Share Valuation in the Stock Market...Restart Your Application");
+	   	    }
+	   	    
+	   	    // -------------------------------------------------------------------------
+	   	    Console.WriteLine("Share Ratio of Partners : ");
+	   	    int [] shareMain = new int[shareCalculator.Partners];
+	   	    int count =0;
+	   	    for(int i =0;i<shareCalculator.Partners;i++){
+	   	        int temp = int.Parse(Console.ReadLine());
+	   	        int v1 = temp;
+	   	        var v = v1;
+	   	        
+	   	        shareMain[i] = v;
+	   	        count++;
+	   	    }
+	   	    
+	   	    if(shareCalculator.ValidateShareRatioValues(shareMain)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Invalid Share Ratio...Restart Your Application");
+	   	    }
+	   	    
+	   	    if(shareCalculator.ValidateSharesCount(shareCalculator.Partners, count)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Mismatch Between Partners Count and Share Ratio Count...Restart Your Application");
+	   	    }
+	   	    
+	   	    
+	   	    
+	   	    if(shareCalculator.ValidateShareRatios (shareCalculator.Svalue, shareMain)){
+	   	    
+	   	    }else{
+	   	        Console.WriteLine("Combined Share Ratio of All Partners does not Match with Company's Share Valuation in the Stock Market...Restart Your Application");
+	   	    }
+	   	    
+	   	    
+	   	    
+	   	    // -------------------------------------------------------------------------
+	   	    Console.WriteLine("Display Profit Sharing");
+	   	    
+	   	    Console.WriteLine(shareCalculator.CalculateProfitShare(shareCalculator.Amount, shareCalculator.Svalue, shareCalculator.Partners, shareMain));
+	   	    
+	   	    double[] profitShares =  shareCalculator.CalculateProfitShare(shareCalculator.Amount, shareCalculator.Svalue, shareCalculator.Partners, shareMain);
+	   	    
+	   	    Console.WriteLine("The Highest Profit Share Value : "+shareCalculator.FindHighestProfitAmount(profitShares));
+	   	    Console.WriteLine("Thank You for using the Profit Sharing Calculator...");
+	   	    Console.WriteLine("Press any key to continue . . .");
+	   	    
+        }
+    }
+}
+
+PROFIT SHARECALCULATOR.CS
+===========================
+
+using System;
+
+namespace ProfitShareApp
+{
+    public class ProfitShareCalculator
+    {
+        
+        //Write your code here
+        
+        public int Partners;
+        public long Amount;
+        public int Svalue;
+        public int partnersCount;
+        
+        
+        public bool ValidatePartnersCount (int partnersCount){
+            if(partnersCount >= 2 && partnersCount <= 5){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        
+        public bool ValidateProfit (long profitAmount){
+            if(profitAmount>=10000){
+                return true;    
+            }else{
+                return false;
+            }
+        }
+        
+        public bool ValidateCompanyShareValuation (int shareValuation){
+            if(shareValuation >= 5 && shareValuation <= 20){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        
+        public bool ValidateShareRatioValues (int [] shareRatios){
+            for(int i =0;i<shareRatios.Length;i++){
+                if(shareRatios[i]<0){
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        public bool ValidateSharesCount (int partnersCount, int sharesCount){
+            if(partnersCount == sharesCount){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        
+        public bool ValidateShareRatios (int shareValuation, int[] shareRatios){
+            int sum =0;
+            
+            foreach(int k in shareRatios){
+                sum += k; 
+            }
+            
+            if(sum == shareValuation){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        
+        public double [] CalculateProfitShare (long profitAmt, int shareValuation, int partnersCount, int[] shareRatios){
+            double [] arr = new double[partnersCount];
+            
+            for(int j =0;j<partnersCount;j++){
+                double  finalAmount = ((double)profitAmt * (double)shareRatios[j])/((double)shareValuation);
+                arr[j]= finalAmount;
+            }
+            return arr;
+        }
+        
+        
+        public double FindHighestProfitAmount (double[] profitShares){
+            double max = 0;
+            
+            foreach(int k in profitShares){
+                if(k>max){
+                    max = k;
+                }
+            }
+            return max;
+        }
+        
+    }
+    
+}
+
+------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
+
+*****INVESTMENTAPP *****
+------------------------------------
+
+PROGRAM.CS
+===========
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace InvestmentApp
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+
+            try
+            {
+
+                InvestmentApp();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occured in the process. Please find the detail: " + ex.Message + " Exception stack trace: " + ex.StackTrace);
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        #region Investment App
+
+        public static void InvestmentApp()
+        {
+            string selectedOption = string.Empty;
+            string name = string.Empty;
+            string dateOfBirth = string.Empty;
+            string uniqueIdentifier = string.Empty;
+            string amount = string.Empty;
+            string fundName = string.Empty;
+            int selectedFund = 0;
+            int index = 0;
+            List<string> fundDetails = new List<string>() { "Reliance", "Asian Paints", "Manappuram Fin", "Apollo Tyres", "Yes Bank" };
+            List<InvestorDetail> investorList = new List<InvestorDetail>();
+            Program objMainProgram = new Program();
+            TextWriter textWriter = new StreamWriter("InvestorDetails.txt");
+            bool showMenu = true;
+
+            Console.Write("**********************************");
+            Console.WriteLine();
+            Console.Write("\tInvestment App");
+            Console.WriteLine();
+            Console.Write("**********************************");
+            Console.WriteLine();
+
+            #region Investment App Menu
+            try
+            {	 	  	    	 	      	  	 	
+
+                while (showMenu)
+                {
+                    Console.WriteLine("Please Choose your option");
+                    Console.WriteLine();
+                    Console.WriteLine("1 - Add New Investor");
+                    Console.WriteLine("2 - View Investor Details");
+                    Console.WriteLine("3 - Close the App");
+                    Console.WriteLine();
+                    selectedOption = Console.ReadLine();
+
+                    switch (selectedOption)
+                    {
+
+                        case "1":
+
+                            Console.WriteLine("Please enter the full Name");
+                            name = Console.ReadLine();
+
+                            Console.WriteLine("Please enter the date of birth (dd/mm/yyyy)");
+                            dateOfBirth = Console.ReadLine();
+
+                            Console.WriteLine("Please enter the PAN card Number");
+                            uniqueIdentifier = Console.ReadLine();
+
+                            Console.WriteLine("Please enter the Amount to invest");
+                            amount = Console.ReadLine();
+
+                            Console.WriteLine("Select the fund to invest");
+                            fundDetails.ForEach(fund => { Console.WriteLine(index + 1 + " - " + fund); index++; });
+                            bool isFundSelected = int.TryParse(Console.ReadLine(), out selectedFund);
+                            fundName = selectedFund > 0 ? fundDetails[selectedFund - 1] : "";
+                            // var newInvestor = objMainProgram.AddNewInvestor(name, dateOfBirth, uniqueIdentifier, amount, fundName);
+
+                            // if (newInvestor != null)
+                            // {	 	  	    	 	      	  	 	
+                            //     investorList.Add(newInvestor);
+                            //     Console.WriteLine("Investor details added successfully.");
+                            //     Console.WriteLine();
+                            //     Console.WriteLine("Press any key to go back to Main Menu");
+                            //     Console.ReadKey();
+                            //     /*Reset to default value*/
+                            //     index = 0;
+                            //     break;
+                            // }
+
+                            Console.WriteLine("Investor detail failed to add.");
+                            index = 0;
+                            break;
+
+                        case "2":
+                            Console.WriteLine();
+                            Console.Write("**********************************");
+                            Console.WriteLine();
+                            Console.Write("\tInvestor Details");
+                            Console.WriteLine();
+                            Console.Write("**********************************");
+                            Console.WriteLine();
+                            Console.WriteLine();
+
+                            foreach (var investor in investorList)
+                            {
+                                Console.Write("Investor Name");
+                                Console.Write("\t\t");
+                                Console.Write("Date Of Birth");
+                                Console.Write("\t");
+                                Console.Write("PAN Card");
+                                Console.Write("\t");
+                                Console.Write("Invested Amount");
+                                Console.Write("\t");
+                                Console.Write("Fund Name");
+                                Console.Write("\t");
+                                Console.WriteLine();
+                                Console.WriteLine("------------------------------------------------------------------------------------------");
+                                Console.WriteLine();
+
+
+                                Console.Write(investor.Name);
+                                Console.Write("\t");
+                                Console.Write(investor.DateOfBirth);
+                                Console.Write("\t");
+                                Console.Write(investor.UniqueIdentifier);
+                                Console.Write("\t");
+                                Console.Write(investor.Amount);
+                                Console.Write("\t\t");
+                                Console.Write(investor.FundName);
+                                Console.Write("\t");
+                                Console.WriteLine();
+                                Console.WriteLine("------------------------------------------------------------------------------------------");
+                                Console.WriteLine();
+                            }	 	  	    	 	      	  	 	
+
+
+                            Console.WriteLine();
+                            Console.WriteLine("Press any key to go back to Main Menu");
+                            Console.ReadKey();
+
+
+                            /*Reset to default values*/
+                            index = 0;
+
+                            break;
+
+                        case "3":
+                            Console.WriteLine("Thank You.");
+                            showMenu = false;
+                            break;
+
+                        default:
+                            Console.WriteLine("Invalid Key entered.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occured in the process. Please find the detail: " + ex.Message + " Exception stack trace: " + ex.StackTrace);
+            }
+            finally
+            {
+
+            }
+
+            #endregion
+
+        }	 	  	    	 	      	  	 	
+        public InvestorDetail AddNewInvestor(string name, DateTime dateOfBirth, string uniqueIdentifier, string enteredAmount, string fundName)
+        {
+            double amount = 0.0;
+            bool isValid = true;
+            InvestorDetail investorDetail = null;
+
+            Console.WriteLine("+++++++++" +dateOfBirth.ToString());
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.Error.WriteLine("Investor Name cannot be empty. Please provide valid value");
+                isValid = false;
+            }
+            else if (string.IsNullOrEmpty(dateOfBirth.ToString()))
+            {
+                Console.Error.WriteLine("date of birth cannot be empty. Please provide valid value");
+                isValid = false;
+            }
+            else if (string.IsNullOrEmpty(uniqueIdentifier))
+            {
+                Console.Error.WriteLine("Unique Identifier cannot be empty. Please provide valid value");
+                isValid = false;
+            }
+            else if (!double.TryParse(enteredAmount, out amount) || amount <= 0)
+            {
+                Console.Error.WriteLine("Incorrect value - amount. Please provide valid value");
+                isValid = false;
+            }
+            else if (string.IsNullOrEmpty(fundName))
+            {
+                Console.Error.WriteLine("Fund Name cannot be empty. Please provide valid value");
+                isValid = false;
+            }
+
+            if (isValid)
+            {
+                investorDetail = new InvestorDetail()
+                {	 	  	    	 	      	  	 	
+                    Name = name,
+                    DateOfBirth = dateOfBirth,
+                    UniqueIdentifier = uniqueIdentifier,
+                    Amount = amount,
+                    FundName = fundName
+                };
+            }
+
+            return investorDetail;
+        }
+
+
+    }
+
+    #endregion
+}
+
+
+INVESTORDETAILS.CS
+======================
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace InvestmentApp
+{
+    /// <summary>
+    /// Model class for InvestorDetail object
+    /// </summary>
+    public class InvestorDetail
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string UniqueIdentifier { get; set; }
+        public double Amount { get; set; }
+        public string FundName { get; set; }
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+*****FEEREIMBURSEMENT **********
+------------------------------------------------
+REIMBURSEMENTCALCULATOR.CS
+============================
+
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FeeReimbursementApp
+{
+    public class ReimbursementCalculator
+    {
+        public bool ValidateNumberOfStudents(int noOfStudents)
+        {
+            return noOfStudents > 0 && noOfStudents <= 10;
+            
+            
+           
+        }
+
+        public bool ValidateStudentId(int studentId)
+        {
+           return studentId > 999 && studentId < 10000;
+           
+            
+        }
+
+        public bool ValidateFeeAmount(double feeAmount)
+        {
+            return feeAmount >= 25000;
+            
+            
+            
+        }
+
+        public bool ValidateMarks(int marks)
+        {
+            return marks >= 80 && marks <= 100;
+            
+            
+            
+        }	 	  	    	 	      	  	 	
+
+        public bool ContainsDuplicateId(int[] studentIds)
+        {
+            return studentIds.Distinct().SequenceEqual(studentIds);
+            
+        }
+
+        public Dictionary<int, double> CreateStudentRefundDetails(int noOfStudents, int[] studentIds, double[] fees, int[] marksPercentage)
+        {
+            
+            double[] totalRefund = new double[noOfStudents];
+
+            Dictionary<int, double> reimbursementDict = new Dictionary<int, double>();
+
+            for (int i = 0; i < noOfStudents; i++)
+            {
+                double refund = 0;
+
+                if (marksPercentage[i] >= 80 && marksPercentage[i] <= 85)
+                {
+                    refund = ((fees[i] * 40) / 100) + 3000;
+                }
+                if (marksPercentage[i] >= 86 && marksPercentage[i] <= 90)
+                {
+                    refund = ((fees[i] * 50) / 100) + 5000;
+                }
+                if (marksPercentage[i] >= 91 && marksPercentage[i] <= 100)
+                {
+                    refund = ((fees[i] * 60) / 100) + 7000;
+                }
+
+                totalRefund[i] = refund;
+            }
+
+            for (int i = 0; i < noOfStudents; i++)
+            {	 	  	    	 	      	  	 	
+                reimbursementDict.Add(studentIds[i], totalRefund[i]);
+            }
+
+            return reimbursementDict;
+        }
+    }
+}
+
+PROGRAM.CS
+===========
+using System;
+using System.Collections.Generic;
+
+namespace FeeReimbursementApp
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Welcome Admin to Reimbursement Application!!!\n");
+            ProgramOperation();
+            Console.WriteLine("\nThank You for Using the Application...Have a Nice Day!!!");
+
+        }
+
+        static void ProgramOperation()
+        {
+            ReimbursementCalculator calculator = new ReimbursementCalculator();
+            Dictionary<int, double> dictionaryStorage = new Dictionary<int, double>();
+
+            Console.Write("No of Students Covered Under the Fee Reimbursement Scheme : ");
+            int noOfStudents = Convert.ToInt32(Console.ReadLine());
+
+            if (!calculator.ValidateNumberOfStudents(noOfStudents))
+            {
+                Console.WriteLine("Invalid Number of Students Entered...Restart the Application");
+                Environment.Exit(0);
+            }
+
+            int[] studentIds = new int[noOfStudents];
+            double[] fees = new double[noOfStudents];
+            int[] marksPercentage = new int[noOfStudents]; 
+            
+
+            for (int i = 0; i < noOfStudents; i++)
+            {
+                Console.WriteLine("\nStudent {0} Record\n", (i + 1));
+                Console.Write("Student Id : ");
+                int studId = Convert.ToInt32(Console.ReadLine());
+
+                if (!calculator.ValidateStudentId(studId))
+                {	 	  	    	 	      	  	 	
+                    Console.WriteLine("Student Id should be 4 Digits in Length...Restart the Application");
+                    Environment.Exit(0);
+                }
+
+                Console.Write("Total Fees Paid : ");
+                double totalFee = Convert.ToDouble(Console.ReadLine());
+
+                if (!calculator.ValidateFeeAmount(totalFee))
+                {
+                    Console.WriteLine("Low Fee Amount...Restart the Application");
+                    Environment.Exit(0);
+                }
+
+                Console.Write("Final Semester (Marks %) : ");
+                int marksPercentageInFinalSem = Convert.ToInt32(Console.ReadLine());
+                if (!calculator.ValidateMarks(marksPercentageInFinalSem))
+                {
+                    Console.WriteLine("Less Percentage..Restart Application again");
+                    Environment.Exit(0);
+                }
+                Console.Write("Backlog (yes/no) : ");
+                string backlogResponse = Console.ReadLine();
+
+                if (backlogResponse.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Student with Id {0} is not eligible for university's Reimbursement Scheme due to semester backlog", studId);
+                    Environment.Exit(0);
+                }
+
+                studentIds[i] = studId;
+                fees[i] = totalFee;
+                marksPercentage[i] = marksPercentageInFinalSem;
+            }
+
+
+            if (!calculator.ContainsDuplicateId(studentIds))
+            {	 	  	    	 	      	  	 	
+                Console.WriteLine("\nDuplicate Student Ids Found...Restart the Application");
+                Environment.Exit(0);
+            }
+            else
+            {
+                dictionaryStorage = calculator.CreateStudentRefundDetails(noOfStudents, studentIds, fees, marksPercentage);
+                Console.WriteLine("\nReimbursement Details Created Successfully!!!");
+            }
+
+            Console.WriteLine("\nReimbursement Details");
+            Console.WriteLine("---------------------");
+
+            if (dictionaryStorage.Count > 0)
+            {
+                Console.WriteLine("{0,-20}{1}", "Student Id", "Total Refund Amount");
+
+                foreach (KeyValuePair<int, double> data in dictionaryStorage)
+                {
+                    Console.WriteLine("{0,-20}{1}", data.Key, data.Value);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Records Found");
+            }
+        }
+    }
+}
+	 	  	    	 	      	  	 	
+-------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*****DREAM WEDDING *********
+-----------------------------------------
+
+PROGRAM.CS
+===========
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DreamWeddingCC
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine(typeof(Program).Assembly.GetName().Name);
+            Console.WriteLine("Welcome to Conto Wedding Services.....");
+            Console.WriteLine();
+            Console.WriteLine("Enter the Wedding Package you wish");
+            string packageType = Console.ReadLine();
+            DreamWedding dreamWedding = new DreamWedding();
+            if (!dreamWedding.ValidatePackage(packageType))
+            {
+                Console.WriteLine("No Such Wedding package available");
+                //Environment.Exit(1);
+
+            }
+            else
+            {
+                int n = 0;
+
+                List<string> events = new List<string>();
+
+                if (packageType.Equals("FSW", StringComparison.OrdinalIgnoreCase))
+                {
+                    n = 5;
+                }
+                else
+                {
+                    n = 3;
+                }	 	  	    	 	      	  	 	
+
+                Console.WriteLine("Enter {0} Event Names and Cost separated by ',' for the selected package", n);
+
+                for (int i = 0; i < n; i++)
+                {
+                    Console.WriteLine("Event Details " + (i + 1));
+                    string _event = Console.ReadLine();
+                    events.Add(_event);
+                }
+
+
+                Dictionary<string, double> wedding = dreamWedding.CreateWedding(packageType, events);
+                if (wedding.Count != 0)
+                {
+                    Console.WriteLine();
+                    string s = String.Format("{0,-20} {1}", "Event Name", "Cost");
+                    Console.WriteLine(s);
+                    foreach (KeyValuePair<string, double> item in wedding)
+                    {
+                        s = String.Format("{0,-20} {1}", item.Key, item.Value);
+                        Console.WriteLine(s);
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("Total Cost for the wedding is " + dreamWedding.GetTotalCost(wedding));
+                }
+
+            }
+
+        }
+    }
+
+}
+	 	  	    	 	      	  	 	
+DREAMWEDDIG.CS
+==================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DreamWeddingCC
+{
+    class DreamWedding
+    {
+        public bool ValidatePackage(string packageType)
+        {
+            if (packageType.Equals("FSW", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else if (packageType.Equals("DW", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else if (packageType.Equals("D", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        public bool ValidateEventList(string packageType, List<string> events)
+        {
+            List<string> e = new List<string>();
+            bool valid = false;
+            if (packageType.Equals("FSW", StringComparison.OrdinalIgnoreCase))
+            {
+                e.Add("wedding venues");
+                e.Add("vendor management");
+                e.Add("wedding invites");
+                e.Add("photography & videography");
+                e.Add("bridal styling");
+                events = events.ConvertAll(t => t.ToLower());
+                if (events.Count != e.Count)
+                {	 	  	    	 	      	  	 	
+                    valid = false;
+                }
+                else
+                {
+                    valid = e.All(events.Contains);
+                }
+
+            }
+            else if (packageType.Equals("DW", StringComparison.OrdinalIgnoreCase))
+            {
+                e.Add("Wedding Venues");
+                e.Add("Transportation");
+                e.Add("Bridal Styling");
+                events = events.ConvertAll(t => t.ToLower());
+                e = e.ConvertAll(t => t.ToLower());
+                if (events.Count != e.Count)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    valid = e.All(events.Contains);
+
+                }
+            }
+            else if (packageType.Equals("D", StringComparison.OrdinalIgnoreCase))
+            {
+                e.Add("Floor Design");
+                e.Add("Lighting design");
+                e.Add("Furniture Linen");
+                events = events.ConvertAll(t => t.ToLower());
+                e = e.ConvertAll(t => t.ToLower());
+                if (events.Count != e.Count)
+                {
+                    valid = false;
+                }	 	  	    	 	      	  	 	
+                else
+                {
+                    valid = e.All(events.Contains);
+                }
+            }
+            return valid;
+
+        }
+        public bool ValidateEventCost(double eventCost)
+        {
+            if (eventCost >= 5000)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        public Dictionary<string, double> CreateWedding(string packageType, List<string> eventsCost)
+        {
+            Dictionary<string, double> wedding = new Dictionary<string, double>();
+            for (int i = 0; i < eventsCost.Count; i++)
+            {
+                string _event = eventsCost[i];
+                wedding.Add(_event.Split(',')[0], double.Parse(_event.Split(',')[1]));
+            }
+            List<string> events = wedding.Keys.ToList();
+            List<double> costs = wedding.Values.ToList();
+            bool costValid = false;
+            for (int i = 0; i < costs.Count; i++)
+            {
+                if (!ValidateEventCost(costs[i]))
+                {
+                    costValid = false;
+                    break;
+                }	 	  	    	 	      	  	 	
+                else
+                {
+                    costValid = true;
+                }
+            }
+            if (!costValid)
+            {
+                Console.WriteLine("Low Cost Amount...Restart the Application");
+                //Environment.Exit(1);
+            }
+
+            if (!ValidateEventList(packageType, events))
+            {
+                Console.WriteLine("Not all events are valid for this package");
+                //Environment.Exit(1);
+                return new Dictionary<string, double>();
+            }
+            else
+            {
+                return wedding;
+            }
+
+
+        }
+        public double GetTotalCost(Dictionary<string, double> Wedding)
+        {
+            double totalCost = 0.0;
+            
+            foreach (double item in Wedding.Values)
+            {
+                totalCost += item;
+            }
+            return totalCost;
+        }
+
+    }	 	  	    	 	      	  	 	
+}
+
+------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------
+****COMPANYSALESDETAILSAPP ****
+-------------------------------------------------------
+
+SERVICE.CS
+==========
+namespace CompanySalesDetailsApp
+{
+    public class Service
+    {
+       //Implement the Properties
+       public string Name {get; set;}
+       public float AnnualSalesAmount{get; set;}
+    }
+   
+}
+
+PROGRAM.CS
+============
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace CompanySalesDetailsApp
+{ 
+    class Program
+    {
+        static void Main()
+        { 
+            int numberOfRecords = int.Parse(Console.ReadLine());
+
+            List<string> inputs = new List<string>();
+
+            for (int i = 0; i < numberOfRecords; i++)
+            {
+                inputs.Add(Console.ReadLine());
+            }
+
+            //Write your code here
+            CompanySalesRevenue companySalesRevenue = new CompanySalesRevenue();
+            var companyDetailsDict = companySalesRevenue.GetCompanySalesDetails(inputs);
+            var companiesRevenueDict = companySalesRevenue.DisplayCompaniesRevenueInOrder(companyDetailsDict);
+            
+            foreach(var item in companiesRevenueDict)
+            {
+                Console.WriteLine(item.Key+":"+item.Value);
+            }
+        }
+    }
+}
+
+COMPANYSALESREVENUE.CS
+==========================
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CompanySalesDetailsApp
+{
+     //Write your code here
+     public class CompanySalesRevenue
+     {
+         public Dictionary<string,List<Service>> 
+         GetCompanySalesDetails(List<string>_companySalesData)
+         {
+             Dictionary<string,List<Service>>companyDict = new Dictionary<string,List<Service>>();
+             for(int i=0;i<_companySalesData.Count;i++)
+             {
+                 if(!companyDict.ContainsKey(_companySalesData[i].Split(':')[0]))
+                 {
+                     companyDict.Add(_companySalesData[i].Split(':')[0],new List<Service>{new Service{Name = _companySalesData[i].Split(':')[2],AnnualSalesAmount = float.Parse(_companySalesData[i].Split(':')[1])}});
+                     
+                     
+                 }
+                 else
+                 {
+                    companyDict[_companySalesData[i].Split(':')[0]].Add(new Service{Name = _companySalesData[i].Split(':')[2],AnnualSalesAmount = float.Parse(_companySalesData[i].Split(':')[1])});
+
+                 }
+             }
+             return companyDict;
+         }
+         
+         public IEnumerable<KeyValuePair<string,float>>
+         DisplayCompaniesRevenueInOrder(Dictionary<string,List<Service>>dictCompaniesSalesDetails)
+         {
+             SortedDictionary<string,float> companiesInOrderDict = new SortedDictionary<string,float>();
+             foreach(var item in dictCompaniesSalesDetails)
+             {
+                 companiesInOrderDict.Add(item.Key,item.Value.Sum(x=>x.AnnualSalesAmount));
+             }
+             IEnumerable<KeyValuePair<string,float>> temp = companiesInOrderDict;
+             return temp;
+         }
+     }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****APPOINTMENTBOOKING *******
+-----------------------------------------------------
+PROGRAM.CS
+============
+//program
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Appointment_Booking_Application
+{
+class Program
+{
+public static void Main()
+{
+bool isValidAppointmentDate;
+AppointmentDateVerification a1 = new AppointmentDateVerification();
+try
+{
+PatientDetail patientDetail = new PatientDetail();
+string doctorname = string.Empty;
+Console.Write("Patient Name: ");
+patientDetail.PatientName = Console.ReadLine();
+Console.Write("Patient Age: ");
+patientDetail.PatientAge = Convert.ToInt32(Console.ReadLine());
+var departments = new PatientDetail().GetDepartments();
+Console.WriteLine("\nDepartments List\n");
+foreach (var item in departments)
+{
+Console.WriteLine(item);
+}
+Console.Write("\nChoose the department number from the above list (1-5) : ");
+int option = Convert.ToInt32(Console.ReadLine());
+string department = departments[option - 1].Substring(2);
+bool isValidDoctor = true;
+do
+{
+List<string> doctors = new PatientDetail().GetDoctors(option);if (doctors.Count > 0)
+{
+Console.WriteLine("\nDoctors in the {0} department\n", department);
+foreach (var item in doctors)
+{
+Console.WriteLine(item);
+}
+Console.Write("\nDoctor Name : ");
+doctorname = Console.ReadLine();
+if (!doctors.Contains(doctorname))
+{
+isValidDoctor = false;
+Console.WriteLine("{0} not found in our list", doctorname);
+}
+else
+{
+isValidDoctor = true;
+}
+}
+} while (!isValidDoctor);
+do
+{
+Console.Write("\nAppointment Request Date (MM/dd/yyyy) : ");
+DateTime appointmentRequestDate = Convert.ToDateTime(Console.ReadLine());
+//Validate the appointmentRequestDate and print appropriate message
+string s = new
+AppointmentDateVerification().CheckAppointmentRequestDate(appointmentRequestDate);
+if (s == "Appointment Confirmed!")
+{
+Console.WriteLine(s);
+Random rd = new Random();
+int p_id = rd.Next(int.MinValue, int.MaxValue);
+Console.WriteLine("Patient Id - " + p_id);
+Console.WriteLine("Please Contact " + doctorname + " on " +
+appointmentRequestDate);isValidAppointmentDate = true;
+}
+else
+{
+Console.WriteLine(s);
+isValidAppointmentDate = false;
+}
+} while (!isValidAppointmentDate);
+}
+catch (Exception e)
+{
+Console.WriteLine(e.Message);
+}
+Console.Read();
+}
+}
+}
+
+
+
+PATIENTDETAILS.CS
+====================
+
+//patient details
+using System;
+using System.Collections.Generic;
+namespace Appointment_Booking_Application
+{
+public class PatientDetail
+{
+public string PatientName;
+public int PatientAge;
+public List<string> GetDepartments()
+{
+List<string> list = new List<string>();
+list.Add("ENT");
+list.Add("Gynecology");
+list.Add("Cardiology");
+list.Add("Neurology");
+list.Add("Nephrology");
+return list;
+}
+public List<string> GetDoctors(int option)
+{
+List<string> l1 = new List<string>();
+switch (option)
+{
+case 1:
+l1.Add("Dr. Murugadoss");
+l1.Add("Dr. Kalaivani");
+break;
+case 2:
+l1.Add("Dr. Abirami");
+l1.Add("Dr. Lakshmi");
+l1.Add("Dr. Revathi");
+break;
+case 3:
+l1.Add("Dr. Amudhan");
+l1.Add("Dr. Gunaseelan");
+l1.Add("Dr. Agarwal");
+break;
+case 4:
+l1.Add("Dr. Natarajan");
+l1.Add("Dr. Nanda");
+l1.Add("Dr. Keerthi");
+break;case 5:
+l1.Add("Dr. Ashirvatham");
+l1.Add("Dr. Cherian");
+l1.Add("Dr. Ram");
+break;
+}
+return l1;
+}
+}
+}
+
+APPOINTMENTDATEVERIFICATION
+=================================
+
+
+//appointment data verfication
+using System;
+namespace Appointment_Booking_Application
+{
+public class AppointmentDateVerification
+{
+public string CheckAppointmentRequestDate(DateTime appointmentRequestDate)
+{
+DateTime dt = DateTime.Today;
+DayOfWeek th = appointmentRequestDate.DayOfWeek;
+if (appointmentRequestDate > dt)
+{
+if (appointmentRequestDate.Year == dt.Year)
+{
+if (th != DayOfWeek.Monday)
+{
+return "Appointment Confirmed!";
+}
+else
+{
+return "Sorry!!! Appointment cannot be given on Monday!";
+}
+}
+else
+{
+return "Appointment Rejected, You can book appointment only for the current year!";
+}
+}
+else
+{
+return "Appointment Rejected, Date must be a future date!";
+}
+}
+}
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****CURRENCY CONVERTER ****
+---------------------------------------------
+PROGRAM.CS
+===========
+using System;
+
+namespace CurrencyConverterApp
+{
+    class Program
+    {
+        static string ErrorMessage = "Invalid input";
+        public struct CurrencyTypes
+        {
+            public const short INR = 1;
+            public const short PND = 2;
+            public const short DOL = 3;
+            public const short YEN = 4;
+            public const short EURO = 5;
+            public const short DIRHAM = 6;
+        }
+        public struct CurrencyRates
+        {
+            public const decimal INRRate = 1;
+            public const decimal PNDRate = 93.17M;
+            public const decimal DOLRate = 74.61M;
+            public const decimal YENRate = 0.69M;
+            public const decimal EURORate = 84.29M;
+            public const decimal DIRHAMRate = 20.31M;
+        };
+        static void Main(string[] args)
+        {
+            InputMethod();
+        }
+        static void InputMethod()
+        {
+            int a = int.Parse(Console.ReadLine());
+            int b= int.Parse(Console.ReadLine());
+            decimal c= decimal.Parse(Console.ReadLine());
+            if(a>0 && a<7 && b<7 && b>0)
+            {
+                decimal d = CurrencyConvert(c, a, b);
+                string p = "" + c;
+                string pc = parseInput(p);
+                string s = "Converted Amount from " + String.Format("{0:0.##}", pc) + " of currency type -" + dispalyCurrencyType(a) + "to currency type -" + dispalyCurrencyType(b) + ":" + String.Format("{0:0.##}", d);
+                Console.WriteLine(s);
+            }
+            else
+            {
+                Console.WriteLine(ErrorMessage);
+            }
+        }
+        static string dispalyCurrencyType(int CurrencyType)
+        {
+            switch(CurrencyType)
+            {
+                case 1:return "INR";
+                case 2: return "PND";
+                case 3: return "DOL";
+                case 4: return "YEN";
+                case 5: return "EURO";
+                case 6: return "DIRHAM";
+                default:return "";
+            }
+        }
+        static decimal getCurrencyRate(int CurrencyType)
+        {
+            switch(CurrencyType)
+            {
+                case 1:return CurrencyRates.INRRate;
+                case 2: return CurrencyRates.PNDRate;
+                case 3: return CurrencyRates.DOLRate;
+                case 4: return CurrencyRates.YENRate;
+                case 5: return CurrencyRates.EURORate;
+                case 6: return CurrencyRates.DIRHAMRate;
+                default: return 0;
+            }
+        }
+        static decimal CurrencyConvert(decimal amount,int type1,int type2)
+        {
+            try
+            {
+                decimal rate = GetConversionRate(type1, type2);
+                decimal convertedamount = (decimal)amount * rate;
+                return convertedamount;
+            }
+            catch(Exception )
+            {
+                Console.WriteLine(ErrorMessage);
+                return 0;
+            }
+        }
+        static decimal GetConversionRate(int type1,int type2)
+        {
+            decimal d;
+            decimal rate1 = getCurrencyRate(type1);
+            decimal rate2 = getCurrencyRate(type2);
+            d = (decimal)rate2 / rate1;
+            return d;
+
+        }
+        static string parseInput(string s)
+        {
+            string[] arr = s.Split('.');
+            if (arr.Length == 1)
+            {
+                return string.Concat(s, ".00");
+            }
+            else
+                return s;
+        }
+    }
+}
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+****CLEARANCE SALE ****
+----------------------------------
+
+PROGRAM.CS
+==============
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProgFundamentals7                 //DO NOT CHANGE the name of namespace
+{
+    public class Program                    //DO NOT CHANGE the name of class 'Program'
+    {
+        public static void Main(string[] args)      //DO NOT CHANGE 'Main' Signature
+        {
+            int[] arr = new int[3];
+            double[] cost = new double[3];
+            Console.WriteLine("Enter the name of the product :");
+            string name = Console.ReadLine();
+            Console.WriteLine("Enter the price of the product :");
+            double price = Convert.ToInt64(Console.ReadLine());
+            Console.WriteLine("Is the product on sale(yes/no) : \n");
+            string SALE = Console.ReadLine();
+            for(int i =0;i<3; i++)
+            {
+                Console.WriteLine("Enter no of product sold in day {0} \n", i + 1);
+                arr[i] = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine();
+                if(SALE =="yes")
+                {
+                    double temp = (price * (1 - 0.07));
+                    price = temp;
+                    cost[i] = (temp * arr[i]);
+                }
+                else
+                {
+                    cost[i] = price * arr[i];
+                }
+            }
+            Console.WriteLine(name);
+            for( int i =0; i<3; i++)
+            {
+                Console.WriteLine("Day {0} sales total : {1}", i + 1, cost[i]);
+            }
+        }
+    }
+}
+

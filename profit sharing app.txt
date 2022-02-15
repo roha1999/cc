@@ -1,0 +1,197 @@
+Yusuf:
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ProfitShareApp
+{
+    class ProfitShareCalculator
+    {
+        public int Partners;
+        public long Amount;
+        public int Svalue;
+        public int partnersCount;
+
+        public int SValue { get; internal set; }
+
+        public bool ValidatePartnersCount(int partnersCount)
+        {
+            if (partnersCount >= 2 && partnersCount <= 5)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool ValidateProfit(long profitAmount)
+        {
+            if (profitAmount >= 10000)
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool ValidateCompanyShareValuation(int shareValuation)
+        {
+            if (shareValuation >= 5 && shareValuation <= 20)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool ValidateShareRatioValues(int sValue, int[] shareRatios)
+        {
+            for (int j = 0; j < partnersCount; j++)
+            {
+                if (shareRatios[j] < 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public bool ValidateSharesCount(int partnersCount, int sharesCount)
+        {
+            return true;
+        }
+
+        internal bool ValidateShareRatioValues(int[] shareMain)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ValidateShareRatios(int shareValuation, int[] shareRatios)
+        {
+            int sum = 0;
+            foreach (int k in shareRatios)
+            {
+                sum = sum + k;
+            }
+            if (sum == shareValuation)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal object CalculateProfitShare(long amount, int sValue, int partners)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double[] CalculateProfitShare(long profitAmt, int shareValuation, int partnersCount, int[] shareRatios)
+        {
+            double[] array = new double[partnersCount];
+            for (int k = 0; k < partnersCount; k++)
+            {
+                double finalAmount = ((double)profitAmt * (double)shareRatios[k]) / ((double)shareValuation);
+                array[k] = finalAmount;
+            }
+            return array;
+        }
+        public double FindHighestProfitAmount(double[] profitShares)
+        {
+            double max = 0;
+            foreach (int k in profitShares)
+            {
+                if (k > max)
+                {
+                    max = k;
+                }
+            }
+            return max;
+        }
+    }
+}
+
+using System;
+
+namespace ProfitShareApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+   ProfitShareCalculator shareCalculator = new ProfitShareCalculator();
+
+   Console.WriteLine("Welcome Admin to the Profit Sharing Calculator Application!!!");
+
+  Console.WriteLine("No Of Partners : ");
+   shareCalculator.Partners = int.Parse(Console.ReadLine());
+
+   if (shareCalculator.ValidatePartnersCount(shareCalculator.Partners))
+   {
+
+   }
+   else
+   {
+    Console.WriteLine("Invalid Partners Count...Restart Your Application");
+   }
+
+   Console.WriteLine("Profit Amount :");
+   shareCalculator.Amount = long.Parse(Console.ReadLine());
+
+   if (shareCalculator.ValidateProfit(shareCalculator.Amount))
+   {
+
+   }
+   else
+   {
+    Console.WriteLine("Invalid Profit Amount...Restart Your Application");
+   }
+
+   Console.WriteLine("Total Share Valuation Percentage of the Company in the Stock Market :");
+   shareCalculator.SValue = int.Parse(Console.ReadLine());
+
+   if (shareCalculator.ValidateCompanyShareValuation(shareCalculator.SValue))
+   {
+
+   }
+   else
+   {
+    Console.WriteLine("Invalid Share Valuation in the Stock Market...Restart Your Application");
+   }
+
+   Console.WriteLine("Share Ratio of Partners : ");
+   int[] shareMain = new int[shareCalculator.Partners];
+   for (int i = 0; i < shareCalculator.Partners; i++)
+            {
+                int v2 = int.Parse(Console.ReadLine());
+                int v1 = v2;
+                var v = v1;
+                shareMain[i] = v;
+            }
+            if (shareCalculator.ValidateShareRatioValues(shareMain))
+   {
+
+   }
+   else
+   {
+    Console.WriteLine("Invalid Share Ratio...Restart Your Application");
+   }
+   if (shareCalculator.ValidateShareRatioValues(shareCalculator.SValue,shareMain))
+   { 
+
+   }
+        else
+   {
+    Console.WriteLine("Combined Share Ratio of All Partners does not Match with Company's Share Valuation in the Stock Market...Restart Your Application");
+   }
+   Console.WriteLine(shareCalculator.CalculateProfitShare(shareCalculator.Amount, shareCalculator.SValue, shareCalculator.Partners));
+   Console.WriteLine("Thank You for using Profit Sharing Calculator...");
+   Console.WriteLine("Press any key to continue . . .");
+  }
+    }
+}

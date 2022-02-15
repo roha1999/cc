@@ -1,0 +1,238 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FeeReimbursement
+{
+    public class ReimbursementCalculator
+    {
+
+        public bool ValidateNumberOfStudents(int noOfStudents)
+        {
+            if (noOfStudents > 0 && noOfStudents <= 10)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool ValidateStudentId(int studentId)
+        {
+
+            if (studentId.ToString().Length == 4)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public bool ValidateFeeAmount(double feeAmount)
+        {
+            if (feeAmount >= 25000)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool ValidateMarks(int marks)
+        {
+
+            if (marks >= 80 && marks <= 100)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public bool ContainsDuplicateId(int[] studentIds)
+        {
+
+            if (studentIds.Length == studentIds.Distinct().Count())
+            {
+
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public Dictionary<int, double> CreateStudentRefundDetails(int noOfStudents, int[] studentIds, double[] fees, int[] marksPercentage)
+        {
+
+            Dictionary<int, double> d = new Dictionary<int, double>();
+
+
+            for (int i = 0; i < noOfStudents; i++)
+            {
+
+                double totalReim = 0;
+
+                if (marksPercentage[i] >= 80 && marksPercentage[i] <= 85)
+                {
+                    totalReim = (fees[i] * 0.40) + 3000;
+                }
+                else if (marksPercentage[i] >= 86 && marksPercentage[i] <= 90)
+                {
+                    totalReim = (fees[i] * 0.50) + 5000;
+                }
+                else
+                {
+                    totalReim = (fees[i] * 0.60) + 7000;
+                }
+
+
+                d.Add(studentIds[i], totalReim);
+            }
+
+
+            return d;
+
+
+        }
+
+
+    }
+
+    public class Program
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Welcome Admin to Reimbursement Application!!!\n");
+            //Invoke ProgramOperation() here
+            ProgramOperation();
+            Console.WriteLine("\nThank You for Using the Application...Have a Nice Day!!!");
+
+        }
+
+        public static void ProgramOperation()
+        {
+            ReimbursementCalculator calculator = new ReimbursementCalculator();
+            Dictionary<int, double> dictionaryStorage = new Dictionary<int, double>();
+
+            Console.Write("No of Students Covered Under the Fee Reimbursement Scheme : ");
+            int noOfStudents = Convert.ToInt32(Console.ReadLine());
+
+            //Call ValidateNumberOfStudents() method by passing noOfStudents and display appropriate message
+
+            if (!calculator.ValidateNumberOfStudents(noOfStudents))
+            {
+                Console.WriteLine("Invalid Number of Students Entered...Restart the Application");
+                Environment.Exit(0);
+            }
+
+
+
+
+
+
+
+            int[] studentIds = new int[noOfStudents];
+            double[] fees = new double[noOfStudents];
+            int[] marksPercentage = new int[noOfStudents];
+
+
+
+
+
+
+            for (int i = 0; i < noOfStudents; i++)
+            {
+                Console.WriteLine("\nStudent {0} Record\n", (i + 1));
+                Console.Write("Student Id : ");
+                int studId = Convert.ToInt32(Console.ReadLine());
+
+                //Call ValidateStudentId() by passing studId and display appropriate message
+
+                if (!calculator.ValidateStudentId(studId))
+                {
+
+                    Console.WriteLine("Student Id should ne 4 Digits in Length...Restart the Application");
+                    Environment.Exit(0);
+
+                }
+
+                Console.Write("Total Fees Paid : ");
+                double totalFee = Convert.ToDouble(Console.ReadLine());
+
+                //Call ValidateFeeAmount() by passing totalFee and display appropriate message
+                if (!calculator.ValidateFeeAmount(totalFee))
+                {
+                    Console.WriteLine("Low Fee Amount...Restart the Application");
+                    Environment.Exit(0);
+                }
+
+                Console.Write("Final Semester (Marks %) : ");
+                int marksPercentageInFinalSem = Convert.ToInt32(Console.ReadLine());
+                //Call ValidateMarks() by passing marksPercentageInFinalSem and display appropriate message
+                if (!calculator.ValidateMarks(marksPercentageInFinalSem))
+                {
+                    Console.WriteLine("Less Percentage...Restart Application again");
+                    Environment.Exit(0);
+                }
+
+                Console.Write("Backlog (yes/no) : ");
+                string backlogResponse = Console.ReadLine();
+
+                if (backlogResponse.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Student with Id {0} is not eligible for university's Reimbursement Scheme due to semester backlog", studId);
+                    Environment.Exit(0);
+                }
+
+                studentIds[i] = studId;
+                fees[i] = totalFee;
+                marksPercentage[i] = marksPercentageInFinalSem;
+            }
+
+
+            if (!calculator.ContainsDuplicateId(studentIds))
+            {
+                Console.WriteLine("\nDuplicate Student Ids Found...Restart the Application");
+                Environment.Exit(0);
+            }
+            else
+            {
+                //Call CreateStudentRefundDetails() by passing the required input values and print appropriate message.
+                dictionaryStorage = calculator.CreateStudentRefundDetails(noOfStudents, studentIds, fees, marksPercentage);
+            }
+
+            Console.WriteLine("\nReimbursement Details");
+            Console.WriteLine("---------------------");
+
+            if (dictionaryStorage.Count > 0)
+            {
+                //Display the final output here
+
+                Console.WriteLine("Student Id\t\tTotal Refund Amount");
+
+                foreach (var student in dictionaryStorage)
+                {
+                    Console.WriteLine($"{student.Key}\t\t{student.Value}");
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("No Records Found");
+            }
+        }
+    }

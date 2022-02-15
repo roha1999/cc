@@ -1,0 +1,172 @@
+Program.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Appointment_Booking_Application
+{
+class Program
+{
+public static void Main()
+{
+bool isValidAppointmentDate;
+AppointmentDateVerification a1 = new AppointmentDateVerification();
+try
+{
+PatientDetail patientDetail = new PatientDetail();
+string doctorname = string.Empty;
+Console.Write("Patient Name: ");
+patientDetail.PatientName = Console.ReadLine();
+Console.Write("Patient Age: ");
+patientDetail.PatientAge = Convert.ToInt32(Console.ReadLine());
+var departments = new PatientDetail().GetDepartments();
+Console.WriteLine("\nDepartments List\n");
+foreach (var item in departments)
+{
+Console.WriteLine(item);
+}
+Console.Write("\nChoose the department number from the above list (1-5) : ");
+int option = Convert.ToInt32(Console.ReadLine());
+string department = departments[option - 1].Substring(2);
+bool isValidDoctor = true;
+do
+{
+List<string> doctors = new PatientDetail().GetDoctors(option);if (doctors.Count > 0)
+{
+Console.WriteLine("\nDoctors in the {0} department\n", department);
+foreach (var item in doctors)
+{
+Console.WriteLine(item);
+}
+Console.Write("\nDoctor Name : ");
+doctorname = Console.ReadLine();
+if (!doctors.Contains(doctorname))
+{
+isValidDoctor = false;
+Console.WriteLine("{0} not found in our list", doctorname);
+}
+else
+{
+isValidDoctor = true;
+}
+}
+} while (!isValidDoctor);
+do
+{
+Console.Write("\nAppointment Request Date (MM/dd/yyyy) : ");
+DateTime appointmentRequestDate = Convert.ToDateTime(Console.ReadLine());
+//Validate the appointmentRequestDate and print appropriate message
+string s = new
+AppointmentDateVerification().CheckAppointmentRequestDate(appointmentRequestDate);
+if (s == "Appointment Confirmed!")
+{
+Console.WriteLine(s);
+Random rd = new Random();
+int p_id = rd.Next(int.MinValue, int.MaxValue);
+Console.WriteLine("Patient Id - " + p_id);
+Console.WriteLine("Please Contact " + doctorname + " on " +
+appointmentRequestDate);isValidAppointmentDate = true;
+}
+else
+{
+Console.WriteLine(s);
+isValidAppointmentDate = false;
+}
+} while (!isValidAppointmentDate);
+}
+catch (Exception e)
+{
+Console.WriteLine(e.Message);
+}
+Console.Read();
+}
+}
+}
+
+****************************************************************************
+PatientDetail.cs
+
+using System;
+using System.Collections.Generic;
+namespace Appointment_Booking_Application
+{
+public class PatientDetail
+{
+public string PatientName;
+public int PatientAge;
+public List<string> GetDepartments()
+{
+List<string> list = new List<string>();
+list.Add("ENT");
+list.Add("Gynecology");
+list.Add("Cardiology");
+list.Add("Neurology");
+list.Add("Nephrology");
+return list;
+}
+public List<string> GetDoctors(int option)
+{
+List<string> l1 = new List<string>();
+switch (option)
+{
+case 1:
+l1.Add("Dr. Murugadoss");
+l1.Add("Dr. Kalaivani");
+break;
+case 2:
+l1.Add("Dr. Abirami");
+l1.Add("Dr. Lakshmi");
+l1.Add("Dr. Revathi");
+break;
+case 3:
+l1.Add("Dr. Amudhan");
+l1.Add("Dr. Gunaseelan");
+l1.Add("Dr. Agarwal");
+break;
+case 4:
+l1.Add("Dr. Natarajan");
+l1.Add("Dr. Nanda");
+l1.Add("Dr. Keerthi");
+break;case 5:
+l1.Add("Dr. Ashirvatham");
+l1.Add("Dr. Cherian");
+l1.Add("Dr. Ram");
+break;
+}
+return l1;
+}
+}
+public class AppointmentDateVerification
+{
+public string CheckAppointmentRequestDate(DateTime appointmentRequestDate)
+{
+DateTime dt = DateTime.Today;
+DayOfWeek th = appointmentRequestDate.DayOfWeek;
+if (appointmentRequestDate > dt)
+{
+if (appointmentRequestDate.Year == dt.Year)
+{
+if (th != DayOfWeek.Monday)
+{
+return "Appointment Confirmed!";
+}
+else
+{
+return "Sorry!!! Appointment cannot be given on Monday!";
+}
+}
+else
+{
+return "Appointment Rejected, You can book appointment only for the current year!";
+}
+}
+else
+{
+return "Appointment Rejected, Date must be a future date!";
+}
+}
+}
+}
+
