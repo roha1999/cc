@@ -1,0 +1,256 @@
+Program.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+// using Oracle.ManagedDataAccess.Client;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace Asses //DO NOT change the namespace name
+{
+    
+    
+   
+    public class Program    //DO NOT change the class name
+    {
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("1. Add the bike details");
+            System.Console.WriteLine("2. Update the bike colour");
+            System.Console.WriteLine("3. Calculate the repair cost");
+            System.Console.WriteLine("4. Exit");
+            System.Console.WriteLine("Enter your choice:");
+            Bike obj=new Bike();
+            BikeManagement objForApp =new BikeManagement();
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    System.Console.WriteLine("Enter bike id :");
+                    obj.BikeId=Convert.ToInt32(Console.ReadLine());
+                    System.Console.WriteLine("Enter bike model :");
+                    obj.BikeModel=Console.ReadLine();
+                    System.Console.WriteLine("Enter bike colour :");
+                    obj.BikeColour=Console.ReadLine();
+                    System.Console.WriteLine("Enter cubic capacity :");
+                    obj.CubicCapacity=Convert.ToInt32(Console.ReadLine());
+                    System.Console.WriteLine("Enter bike price :");
+                    obj.BikePrice=Convert.ToInt32(Console.ReadLine());
+                    if(obj.CubicCapacity==100 || obj.CubicCapacity==250 || obj.CubicCapacity==500)
+                    {
+                        objForApp.AddBikeDetails(obj);
+                        Console.WriteLine("Bike Colour updated Successfully");  
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Bike details cannot be added");
+                    }
+                    
+                    break;
+                case "2":
+                    System.Console.WriteLine("Enter bike id :");
+                    int bikeId=Convert.ToInt32(Console.ReadLine());
+                    System.Console.WriteLine("Enter bike colour to update :");
+                    string bikeColour=Console.ReadLine();
+                    bool ans2=objForApp.UpdateBikeColourById(bikeId,bikeColour);
+                    if(ans2==true)
+                    Console.WriteLine("Bike Colour updated Successfully");
+                    else
+                    Console.WriteLine("Cannot Update Bike colour");
+                    break;
+                case "3":
+                    System.Console.WriteLine("Enter cubic capacity :");
+                    int cc=Convert.ToInt32(Console.ReadLine());
+                    System.Console.WriteLine("Enter bike’s current kilomet :");
+                    int bikeKilometer=Convert.ToInt32(Console.ReadLine());
+                    if(cc==100 || cc==250 || cc==500)
+                        {
+                            int ans3=objForApp.CalculateBikeRepairCost(cc,bikeKilometer);
+                            System.Console.WriteLine(ans3);
+                        }
+                    else 
+                        System.Console.WriteLine("0");    
+                    break;
+                case "4":
+                    System.Console.WriteLine("Thank you");
+                    break;
+                default:
+                    System.Console.WriteLine("Invalid Choice");
+                    break;
+            }
+        }
+    }
+}
+****___________________________***
+Bike.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+// using Oracle.ManagedDataAccess.Client;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace Asses //DO NOT change the namespace name
+{
+
+	public class Bike   //DO NOT change the class name
+	{
+		public int BikeId;
+        public String BikeModel;
+        public String BikeColour;
+        public int CubicCapacity;
+        public int BikePrice;
+	}
+}
+***______________________________***
+
+BikeManagement.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+// using Oracle.ManagedDataAccess.Client;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace Asses //DO NOT change the namespace name
+{
+    public class BikeManagement //DO NOT change the class name
+	{
+		public void AddBikeDetails(Bike obj)
+	    {
+	        MySqlCommand cmd = new MySqlCommand();
+			DBHandler db= new DBHandler();
+			cmd.Connection=db.GetConnection();//very important 
+			cmd.Connection.Open();
+			string qry= "insert into bike values ("+obj.BikeId+", '"+obj.BikeModel+"', '"+obj.BikeColour+"', "+obj.CubicCapacity+", "+obj.BikePrice+")";
+ 			cmd.CommandText = qry;
+			cmd.ExecuteNonQuery();
+			cmd.Connection.Close();
+	    }
+	    public bool UpdateBikeColourById(int id, String bikeColour)
+	    {
+	        MySqlCommand cmd = new MySqlCommand();
+			DBHandler db= new DBHandler();
+			cmd.Connection=db.GetConnection();//very important 
+			cmd.Connection.Open();
+			string qry= "update bike set BikeColour='"+bikeColour+"' where BikeId="+id;
+			cmd.CommandText = qry;
+			int upbkans= cmd.ExecuteNonQuery();
+			cmd.Connection.Close();
+			if(upbkans>0)
+    			return true;
+			else
+    			return false;
+	    }
+	    public int CalculateBikeRepairCost(int cc, int bikeKilometer)
+	    {
+			int serviceCost = 1000;
+			int Cost=0;
+			if(bikeKilometer>=0 && bikeKilometer<=5000)
+				Cost=serviceCost+50;
+			else if(bikeKilometer>=5001 && bikeKilometer<= 10000)
+			{
+				if(cc==100){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+500)-j;}
+				else if(cc==250){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+700)-j;}
+				else if(cc==500){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+900)-(j);}
+			}
+			else if(bikeKilometer>=10000)
+			{
+				if(cc==100){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+600)-j;}
+				else if(cc==250){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+800)-j;}
+				else if(cc==500){
+					double i=(0.05*cc);
+					int j=Convert.ToInt32(i);
+					Cost=(serviceCost+1000)-j;
+					}
+			}
+			return Cost;
+	    }
+	}
+}
+***___________________________****
+
+DBConnection.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+// using Oracle.ManagedDataAccess.Client;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+
+namespace Asses
+{
+    public class DBConnection
+    {
+        public static String connStr = "server=localhost;user id=root; password=2100305@Cts ; database=revision;port=3306";
+    }
+    
+}
+****_______________________****
+
+DBHandler.cs
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+// using Oracle.ManagedDataAccess.Client;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace Asses //DO NOT change the namespace name
+
+{
+    public class DBHandler    //DO NOT change the class name
+    {
+       public MySqlConnection GetConnection(){
+       //OracleConnection conn=new OracleConnection(DBConnection.connStr);
+       MySqlConnection conn= new MySqlConnection(DBConnection.connStr);
+       return conn;
+       //Implement the methods as per the description
+    }
+}
+}
