@@ -1,0 +1,252 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang16393{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\sa200\sl276\slmult1\lang9\f0\fs22  \b 1.Alien's Visit\b0\par
+print("Hello "+input("Enter the name:")+"! Welcome to our planet Earth.")\par
+\par
+\b 2. Income Tax\b0\par
+\par
+age=int(input("Enter the age:\\n"))\par
+tax=0\par
+if age>18 and age<=100:\par
+    income=int(input("Enter the income:\\n"))\par
+    if income>0:\par
+        if age<=60:\par
+            if income<=250000:\par
+                tax=(income*0)/100\par
+            elif income>250000 and income<=500000:\par
+                tax=(income*10)/100\par
+            elif income>500000 and income<=1000000:\par
+                tax=(income*20)/100\par
+            elif income>1000000:\par
+                tax=(income*30)/100\par
+        elif age>60 and age<=80: \par
+            if income<=300000:\par
+                tax=(income*0)/100\par
+            elif income>300000 and income<=500000:\par
+                tax=(income*10)/100\par
+            elif income>500000 and income<=1000000:\par
+                tax=(income*20)/100\par
+            elif income>1000000:\par
+                tax=(income*30)/100\par
+        elif age>80 :\par
+            if income<=500000:\par
+                tax=(income*0)/100\par
+            elif income >500000 and income<=1000000:\par
+                tax=(income*20)/100\par
+            elif income>1000000:\par
+                tax=(income*30)/100\par
+        print("The Tax amount is: %.2f" % tax)\par
+    else:\par
+        print("Invalid Income")\par
+else:\par
+    print("Invalid Age")\par
+\par
+\b 3.News Report Generation\par
+\b0\par
+x=int(input("Dead Count:"+"\\n"))\par
+if x>=0:\par
+    y=int(input("Injured Count:"+"\\n"))\par
+    if y>=0:\par
+        z=int(input("Safe Count:"+"\\n"))\par
+        if z>=0:\par
+            print("TSUNAMI REPORT OF JAPAN"+"\\n"+"The number of people"+"\\n"+"Dead:"+str(x)+"\\n"+"Injured:"+str(y)+"\\n"+\par
+"Safe:"+str(z)+"\\n"+"Please help the people who are suffering!!!")\par
+        else:\par
+            print("Invalid input")\par
+    else:\par
+        print("Invalid input")\par
+else:\par
+    print("Invalid input")\par
+\par
+\b 4. Palindrome\par
+\b0\par
+word=input("Enter the string:")\par
+new_word=word.lower().replace(" ","")\par
+if new_word[::1]==new_word[::-1]:\par
+    print("Yes, the string is a palindrome!")\par
+else:\par
+    print("No, the string is not a palindrome!")\par
+\par
+\b 5.Search Student Data\par
+\b0\par
+n=int(input("Enter the no of student details to be created : "))\par
+data=[]\par
+subdict=\{\}\par
+if n>0:\par
+    for i in range(n):\par
+        name=input("Name: ")\par
+        age=int(input("Age: "))\par
+        if age<10 or age>20:\par
+            print("Invalid Input")\par
+            exit()\par
+        location=input("Location: ")\par
+        subdict.update(\{'Name':name,'Age':age,'Location':location\})\par
+        data.append(subdict)\par
+        subdict=\{\}\par
+    print("Here's the list of student details :")\par
+    for i in data:\par
+        print(i)\par
+    sn=input("Enter the training location: ")\par
+    res=[sub['Name'] for sub in data if sub['Location']==sn]\par
+    if not res:\par
+        print("Invalid location")\par
+    else:\par
+        print("Student(s) enrolled in this training location:")\par
+        for i in res:\par
+            print(i)\par
+else:\par
+    print("Invalid Input")\par
+\par
+\b 6. Password Protection\par
+\b0\par
+n1=int(input("Enter the total no.of plots: "))\par
+f=e=o=0\par
+l=[]\par
+if n1<=20 and n1>=1:\par
+    print("Enter the numbers of each plot")\par
+    for i in range(n1):\par
+        i=int(input())\par
+        if i<=0:\par
+            print("Invalid Input")\par
+            exit()\par
+        l.append(i)\par
+        o=(sum([i for i in l if i%2!=0]))\par
+        e=sum([i for i in l if i%2==0])\par
+        avg=float((e+o)/2)\par
+    print("The password for the file is: %.2f" % avg)\par
+else:\par
+    print("Invalid Input")\par
+\par
+\b 7. Pass or Fail\par
+\b0 n=int(input("Enter the no. of subjects: "))\par
+l=[]\par
+f=0\par
+p=0\par
+if n>0:\par
+    print("Enter the marks:")\par
+    for i in range(n):\par
+        i=int(input())\par
+        if i>=0 and i<=100:\par
+            l.append(i)\par
+        else:\par
+            print("Invalid mark")\par
+            exit()\par
+    for i in l:\par
+        if i<=50:\par
+            f=f+1\par
+        else:\par
+            p=p+1\par
+    print("No. of subjects passed:",p)\par
+    print("No. of subjects failed:",f)\par
+else:\par
+    print("Invalid no. of subjects")\par
+\par
+\b 8.AEIMA\rquote s Online Courses\par
+\b0\par
+n=int(input("Enter number of courses: "))\par
+d=\{\}\par
+if n>=1:\par
+    for i in range(n):\par
+        print("Enter name of the subject and mark respectively:")\par
+        name=input()\par
+        mark=int(input())\par
+        if mark<0 or mark>100:\par
+            print("Invalid mark")\par
+            exit()\par
+        d[name]=mark\par
+    print("The courses you have cleared are:")\par
+    for key,value in d.items():\par
+        if value>=80 and value<=100:\par
+            print(key,value)\par
+else:\par
+    print("Invalid no. of courses")\par
+\par
+\b 9.Arrange Names\par
+\b0\par
+names = []\par
+print("Enter the number of names:")\par
+number = int(input())\par
+if(number<=0):\par
+    print("Invalid Input")\par
+else:\par
+    print("Enter the names:")\par
+    for i in range(number):\par
+        name = input()\par
+        names.append(name)\par
+        names.sort(reverse = True)\par
+        names.sort(reverse=True,key=len)\par
+    print("The sorted name list is:")\par
+    for i in range(number):\par
+        print(names[i])\par
+\par
+\b 10.Copy the File\par
+\b0 print("Aerosol - 38,Churn - 50,Plank - 55,Slipsheet - 75,Jerrican - 950,Girder - 100")\par
+\par
+\b 11.  Store Student Data\par
+\b0\par
+n=int(input("Enter number of students: "))\par
+file=open('output_data.txt','w')\par
+for i in range(1,n+1):\par
+    print("Student"+str(i))\par
+    name=input("Enter name: ")\par
+    score=input("Enter the score: ")\par
+    line="Name: "+name+" "+"Score: "+score\par
+    file.write(line+"\\n")\par
+file.close()\par
+\par
+\b 12. Farewell\par
+\b0\par
+\b farewll.py\par
+\b0 import greet\par
+n=input("Enter the senior's name: ")\par
+greet.greet(n)\par
+\par
+\b Greet.py\b0\par
+def greet(name):\par
+    print(message+" Mr."+name+", Welcome to the farewell Party!!!")\par
+    print("Documentation string: Module for Greeting")\par
+message="Hello"\par
+\par
+\b 13. Rhythm Composer\par
+\b0\par
+def find_prime(start,end):\par
+    count=0\par
+    for num in range(start_number,end_number+1):\par
+        if num>1:\par
+            for i in range(2,num):\par
+                if(num%i)==0:\par
+                    break\par
+            else:\par
+                print(num,end=" ")\par
+                count=count+1\par
+    if count==0:\par
+        print("There is no prime numbers in this range")\par
+start_number=int(input())\par
+end_number=int(input())\par
+if start_number<0 or end_number<0 or start_number>end_number:\par
+    print("Invalid range")\par
+elif start_number==end_number:\par
+    print("There is no prime numbers in this range")\par
+else:\par
+    find_prime(start_number,end_number)\par
+\par
+\b 14. Time Table Planning\par
+time_table.py\par
+\b0 from Dates import *\par
+year=int(input("Enter year as 4 digits (e.g: 2002):"))\par
+month=int(input("Enter month number:"))\par
+print("Year:", ("Leap Year") if is_leap(year) else "Not Leap Year")\par
+print("Month Name: ",month_name(month))\par
+print("Days in month: ",days_in_month(month,year))\par
+\par
+\b Dates.py\par
+\b0 import calendar\par
+def is_leap(year):\par
+    return ( year%4==0 and year % 100!=0 )or year % 400 == 0\par
+def month_name(no):\par
+    #date=datetime.datetime.now()\par
+    return calendar.month_name[no]\par
+def days_in_month(month,year):\par
+    return calendar.monthrange(year,month)[1]\b\par
+\b0\par
+}
+ 
